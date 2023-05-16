@@ -39,6 +39,11 @@ def main(args):
 def searchVTandDownload(search_statement):
     vt_client = vt.Client()
     print("a")
+
+    # Test search: p%253A5%2520type%253Adocument%2520s%253A1
+    # test = c.iterator("/intelligence/search?query=p%253")
+    # test4 = c.get_json("/intelligence/search?query=p%253")
+    # test4['data']
     def searchVTE(search):
         print("a")
     def downloadFiles(searchResults):
