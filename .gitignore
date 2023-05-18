@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+samples/
 *.py[cod]
 *$py.class
 mystery_task.py
