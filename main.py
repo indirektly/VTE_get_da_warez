@@ -1,4 +1,5 @@
 import vt
+import json
 import argparse
 from mystery_task import mystery
 
@@ -28,6 +29,8 @@ def main():
 
     
     VT_results = searchVTandDownload(args.vt_api, args.search, args.directory)
+
+
 
     if(args.extra != "x"):
         mystery(args.extra, VT_results["file_names"])
@@ -84,6 +87,7 @@ def searchVTandDownload(api_key, search_statement, directory):
         
 
     vt_client.close()
+    return(samples_found)
 
 def mysteryTask(samples_found):
     print("a")
