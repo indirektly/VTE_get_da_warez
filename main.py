@@ -27,14 +27,19 @@ def main():
             args.vt_api= c.readline()
         c.close()
 
-    
+
     VT_results = searchVTandDownload(args.vt_api, args.search, args.directory)
 
-
-
     if(args.extra != "x"):
-        mystery(args.extra, VT_results["file_names"])
+        mystery(args.extra, VT_results)
     
+
+    with open("results.json", "w") as r:
+        temp = json.loads(r)
+        temp.update(VT_results)
+        final_results = json.dumps(temp)
+        r.write(final_results)
+    r.close()
 
 
 
@@ -56,27 +61,31 @@ def searchVTandDownload(api_key, search_statement, directory):
 
     samples_found = {}
     for i in range(len(VTE_JSON_results["data"])):
-        temp = {}
-        # Hashes
-        temp["md5"] = VTE_JSON_results["data"][i]["attributes"]["md5"]
-        temp["sha1"] = VTE_JSON_results["data"][i]["attributes"]["sha1"]
-        temp["sha256"] = VTE_JSON_results["data"][i]["attributes"]["sha256"]
-        
-        # Dispositions
-        if(
-            (VTE_JSON_results["data"][i]["attributes"]["last_analysis_stats"]["malicious"] > 0) 
-            or (
-            VTE_JSON_results["data"][i]["attributes"]["last_analysis_stats"]["suspicious"])):
-            temp["simple_disposition"] = "malicious"
-        else:
-            temp["simple_disposition"] = "benign"
-        temp["overall_disposition"] = VTE_JSON_results["data"][i]["attributes"]["last_analysis_stats"]
-        
-        # Meta data
-        temp["file_type"] = VTE_JSON_results["data"][i]["attributes"]["type_description"]
-        temp["file_name"] = VTE_JSON_results["data"][i]["attributes"]["meaningful_name"]
-        temp["search_used"] = search_statement
-        samples_found[temp["sha256"]] = temp
+        try:
+            temp = {}
+            # Hashes
+            temp["md5"] = VTE_JSON_results["data"][i]["attributes"]["md5"]
+            temp["sha1"] = VTE_JSON_results["data"][i]["attributes"]["sha1"]
+            temp["sha256"] = VTE_JSON_results["data"][i]["attributes"]["sha256"]
+            
+            # Dispositions
+            if(
+                (VTE_JSON_results["data"][i]["attributes"]["last_analysis_stats"]["malicious"] > 0) 
+                or (
+                VTE_JSON_results["data"][i]["attributes"]["last_analysis_stats"]["suspicious"])):
+                temp["simple_disposition"] = "malicious"
+            else:
+                temp["simple_disposition"] = "benign"
+            temp["overall_disposition"] = VTE_JSON_results["data"][i]["attributes"]["last_analysis_stats"]
+            
+            # Meta data
+            temp["file_type"] = VTE_JSON_results["data"][i]["attributes"]["type_description"]
+            temp["file_name"] = VTE_JSON_results["data"][i]["attributes"]["meaningful_name"]
+            temp["search_used"] = search_statement
+            samples_found[temp["sha256"]] = temp
+        except:
+            print("Issue with:\n\n")
+            print(str(VTE_JSON_results["data"][i]))
 
 
     # Download the samples
