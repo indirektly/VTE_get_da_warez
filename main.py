@@ -31,14 +31,13 @@ def main():
     VT_results = searchVTandDownload(args.vt_api, args.search, args.directory)
 
     if(args.extra != "x"):
-        mystery(args.extra, VT_results)
+        mystery(args.extra, VT_results, 'n')
     
 
     with open("results.json", "w") as r:
         temp = json.loads(r)
         temp.update(VT_results)
-        final_results = json.dumps(temp)
-        r.write(final_results)
+        json.dump(temp, r)
     r.close()
 
 
@@ -80,7 +79,7 @@ def searchVTandDownload(api_key, search_statement, directory):
             
             # Meta data
             temp["file_type"] = VTE_JSON_results["data"][i]["attributes"]["type_description"]
-            temp["file_name"] = VTE_JSON_results["data"][i]["attributes"]["meaningful_name"]
+            #temp["file_name"] = VTE_JSON_results["data"][i]["attributes"]["meaningful_name"]
             temp["search_used"] = search_statement
             samples_found[temp["sha256"]] = temp
         except:
@@ -97,9 +96,6 @@ def searchVTandDownload(api_key, search_statement, directory):
 
     vt_client.close()
     return(samples_found)
-
-def mysteryTask(samples_found):
-    print("a")
 
 
 if(__name__ == '__main__'):
